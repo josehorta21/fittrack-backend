@@ -6,14 +6,10 @@ const cors = require('cors');
 dotenv.config();
 const app = express();
 
-const corsOptions = {
-  origin: "https://fittrack-frontend-eight.vercel.app", // frontend
-  credentials: true
-};
-
+// 🛡️ CORS HEADERS (fix for Render)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://fittrack-frontend-eight.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
@@ -21,26 +17,28 @@ app.use((req, res, next) => {
   }
   next();
 });
-;
+
 app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 
-// Simple route
-app.get("/", (req, res) => {
+// ✅ Simple test route
+app.get('/', (req, res) => {
   res.send("FitTrack API is running!");
 });
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.set('strictQuery', true); // Suppress deprecation warning
+// 🧠 Optional warning fix
+mongoose.set('strictQuery', true);
 
+// 🔌 MongoDB connection
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => {
-  console.log("✅ Connected to MongoDB");
-  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-})
-.catch((err) => console.error("❌ Mongo connection error:", err));
+  .then(() => {
+    console.log("✅ Connected to MongoDB");
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
+  .catch((err) => console.error("❌ Mongo connection error:", err));

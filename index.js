@@ -5,12 +5,18 @@ const cors = require('cors');
 
 dotenv.config();
 const app = express();
-app.use(cors());
+
+
+const corsOptions = {
+  origin: "https://fittrack-frontend-eight.vercel.app",
+  credentials: true
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 
 
-// Simple route
 app.get("/", (req, res) => {
   res.send("FitTrack API is running!");
 });
